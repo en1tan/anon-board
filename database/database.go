@@ -11,6 +11,7 @@ import (
 )
 
 type DatabaseConnection interface {
+	Get() *gorm.DB
 }
 
 type databaseConnection struct {

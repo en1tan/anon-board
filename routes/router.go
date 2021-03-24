@@ -2,33 +2,35 @@ package routes
 
 import (
 	"github.com/en1tan/anon-board/config"
+	"github.com/en1tan/anon-board/controllers"
 	"github.com/gin-gonic/gin"
 )
 
 type Router interface {
-  gin.IRouter
-  Serve() error
+	gin.IRouter
+	Serve() error
+	RegisterThreadRoutes(c controllers.ThreadController)
 }
 
 type router struct {
-  *gin.Engine
-  c *config.Config
+	*gin.Engine
+	c *config.Config
 }
 
 func NewRouter(c *config.Config) Router {
-  config := c.Get()
-  r := gin.New()
-  if config.GetString("ENVIRONMENT") == "prod" {
-    gin.SetMode(gin.ReleaseMode)
-  }
-  if config.GetBool("app.log") {
-    r.Use(gin.Logger())
-  }
+	config := c.Get()
+	r := gin.New()
+	if config.GetString("ENVIRONMENT") == "prod" {
+		gin.SetMode(gin.ReleaseMode)
+	}
+	if config.GetBool("app.log") {
+		r.Use(gin.Logger())
+	}
 
-  return &router{Engine: r, c: c}
+	return &router{Engine: r, c: c}
 }
 
 func (r *router) Serve() error {
-  port := r.c.Get().GetString("app.port")
-  return r.Run(":"+port)
+	port := r.c.Get().GetString("app.port")
+	return r.Run(":" + port)
 }
